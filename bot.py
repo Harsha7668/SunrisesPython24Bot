@@ -22,19 +22,28 @@ async def start(client, message):
                         "Please note that you can upload and manage up to 3 '.txt' or '.py' files.\n"
                         "What would you like to do?")
 
+
+
 # Handle file uploads
 @app.on_message(filters.document)
 async def handle_document(client, message):
     if message.document.file_name.endswith(('.py', '.txt')):
-        if len(files) < 3:
-            file_id = message.document.file_id
-            files[file_id] = message.document.file_name
-            await message.download(file_name=files[file_id])
-            await message.reply(f"File '{files[file_id]}' uploaded. Use 'Run' to execute it or 'Delete' to remove it.")
-        else:
-            await message.reply("You can only upload and manage up to 3 files. Please delete a file before uploading a new one.")
+        file_id = message.document.file_id
+        file_name = message.document.file_name
+        files[file_name] = file_id
+        await message.reply(f"File '{file_name}' uploaded and saved with file ID: {file_id}. Use the file name to get the file ID.")
+
+# Fetch file ID by file name
+@app.on_message(filters.command("getfileid"))
+async def get_file_id(client, message):
+    file_name = message.text.split(" ", 1)[1]
+    file_id = files.get(file_name)
+    if file_id:
+        await message.reply(f"The file ID for '{file_name}' is: {file_id}")
     else:
-        await message.reply("Please upload a valid '.py' or '.txt' file.")
+        await message.reply("Invalid file name or file not found.")
+
+
 
 # Convert text to .py file
 @app.on_message(filters.text & filters.command("convert"))
