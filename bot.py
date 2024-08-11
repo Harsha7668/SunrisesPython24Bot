@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import os
-
 # Bot token from BotFather
 API_ID = "10811400"
 API_HASH = "191bf5ae7a6c39771e7b13cf4ffd1279"
