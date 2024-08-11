@@ -2,9 +2,9 @@ from pyrogram import Client, filters
 import os
 
 # Bot token from BotFather
-API_ID = "your_api_id"
-API_HASH = "your_api_hash"
-BOT_TOKEN = "your_bot_token"
+API_ID = "10811400"
+API_HASH = "191bf5ae7a6c39771e7b13cf4ffd1279"
+BOT_TOKEN = "7412278588:AAHmk19iP3uK79OglBISjicbl70TD6i9wEc"
 
 app = Client("python_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
