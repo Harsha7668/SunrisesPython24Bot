@@ -37,7 +37,7 @@ async def handle_document(client, message):
         await message.reply("Please upload a valid '.py' or '.txt' file.")
 
 # Convert text to .py file
-@app.on_message(filters.text & ~filters.command)
+@app.on_message(filters.text & filters.command("convert"))
 async def convert_text(client, message):
     text = message.text
     file_name = "converted_file.py"
