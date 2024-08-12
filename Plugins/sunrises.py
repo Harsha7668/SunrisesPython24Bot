@@ -1,5 +1,6 @@
 import os
 from pyrogram import Client, filters
+from config import *
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Dictionary to store file_name: file_id pairs
@@ -79,7 +80,7 @@ async def list_files(client, message):
 # Manually run system commands
 @Client.on_message(filters.command("sudo"))
 async def sudo_command(client, message):
-    if message.from_user.id == YOUR_ADMIN_USER_ID:  # Replace YOUR_ADMIN_USER_ID with your Telegram user ID
+    if message.from_user.id == ADMIN:  # Replace YOUR_ADMIN_USER_ID with your Telegram user ID
         command = " ".join(message.text.split()[1:])  # Get the command from the message
         if command:
             os.system(command)
