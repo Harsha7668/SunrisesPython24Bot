@@ -12,7 +12,7 @@ async def start(client, message):
                         "- Upload a Python (.py) or text (.txt) file to store it.\n"
                         "- Use inline buttons to run or delete the file.\n"
                         "- Send a `requirements.txt` file to install dependencies automatically.\n"
-                        "- Use `/install` to manually install dependencies from 'requirements.txt'.\n"
+                        "- Use `/sudo <command>` to manually run system commands.\n"
                         "What would you like to do?")
 
 # Handle file uploads
@@ -76,13 +76,17 @@ async def list_files(client, message):
     else:
         await message.reply("No files uploaded.")
 
-# Manually install dependencies from requirements.txt
-@Client.on_message(filters.command("install"))
-async def install(client, message):
-    if 'requirements.txt' in files:
-        file_name = 'requirements.txt'
-        file_path = os.path.join(os.getcwd(), file_name)
-        await install_requirements(file_path)
-        await message.reply(f"Dependencies installed from '{file_name}'.")
+# Manually run system commands
+@Client.on_message(filters.command("sudo"))
+async def sudo_command(client, message):
+    if message.from_user.id == YOUR_ADMIN_USER_ID:  # Replace YOUR_ADMIN_USER_ID with your Telegram user ID
+        command = " ".join(message.text.split()[1:])  # Get the command from the message
+        if command:
+            os.system(command)
+            await message.reply(f"Command executed: `{command}`")
+        else:
+            await message.reply("No command provided.")
     else:
-        await message.reply("No 'requirements.txt' file found. Please upload it first.")
+        await message.reply("You do not have permission to use this command.")
+
+# Ensure to replace YOUR_ADMIN_USER_ID with the ID of the user who should have access to the sudo command.
