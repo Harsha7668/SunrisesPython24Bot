@@ -2,7 +2,7 @@
 #TG:@SUNRISES_24
 from pyrogram import Client
 from aiohttp import web
-from main.web_support import web_server
+from Plugins.web_support import web_server
 from config import *
 import os
 
