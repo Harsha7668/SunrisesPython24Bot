@@ -43,25 +43,36 @@ async def handle_document(client, message):
         await message.reply("Please upload a valid '.py', '.txt', or 'requirements.txt' file.")
 
 # Handle text messages
+import os
+import hashlib
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
 @Client.on_message(filters.text)
 async def handle_text(client, message):
-    # Create a .py file from the text message
-    file_name = f"{message.from_user.id}_{message.message_id}.py"
-    file_path = os.path.join("/tmp", file_name)
+    try:
+        # Use the hash of the message text to ensure uniqueness
+        file_content = message.text
+        file_hash = hashlib.md5(file_content.encode()).hexdigest()  # Generate a unique hash
+        file_name = f"{message.from_user.id}_{file_hash}.py"
+        file_path = os.path.join("/tmp", file_name)
+        
+        with open(file_path, 'w') as file:
+            file.write(file_content)
+        
+        # Save the file information
+        files[file_name] = None  # No file_id for text converted files
+        
+        # Create inline buttons for the .py file
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("Run", callback_data=f"run_{file_name}")],
+            [InlineKeyboardButton("Delete", callback_data=f"delete_{file_name}")]
+        ])
+        
+        await message.reply(f"Text converted to '{file_name}' and saved as a Python script.", reply_markup=keyboard)
     
-    with open(file_path, 'w') as file:
-        file.write(message.text)
-    
-    # Save the file information
-    files[file_name] = None  # No file_id for text converted files
-    
-    # Create inline buttons for the .py file
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Run", callback_data=f"run_{file_name}")],
-        [InlineKeyboardButton("Delete", callback_data=f"delete_{file_name}")]
-    ])
-    
-    await message.reply(f"Text converted to '{file_name}' and saved as a Python script.", reply_markup=keyboard)
+    except Exception as e:
+        await message.reply(f"Error: {str(e)}")
 
 # Handle button callbacks
 @Client.on_callback_query()
